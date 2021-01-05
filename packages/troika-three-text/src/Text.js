@@ -9,7 +9,7 @@ import {
 } from 'three'
 import { GlyphsGeometry } from './GlyphsGeometry.js'
 import { createTextDerivedMaterial } from './TextDerivedMaterial.js'
-import { getTextRenderInfo } from './TextBuilder.js'
+import { layoutText } from './TextBuilder.js'
 
 const Text = /*#__PURE__*/(() => {
 
@@ -294,23 +294,7 @@ const Text = /*#__PURE__*/(() => {
           this._isSyncing = true
           this.dispatchEvent(syncStartEvent)
 
-          getTextRenderInfo({
-            text: this.text,
-            font: this.font,
-            fontSize: this.fontSize || 0.1,
-            letterSpacing: this.letterSpacing || 0,
-            lineHeight: this.lineHeight || 'normal',
-            maxWidth: this.maxWidth,
-            textAlign: this.textAlign,
-            textIndent: this.textIndent,
-            whiteSpace: this.whiteSpace,
-            overflowWrap: this.overflowWrap,
-            anchorX: this.anchorX,
-            anchorY: this.anchorY,
-            colorRanges: this.colorRanges,
-            includeCaretPositions: true, //TODO parameterize
-            sdfGlyphSize: this.sdfGlyphSize
-          }, textRenderInfo => {
+          layoutText(this.getTextRenderArgs(), textRenderInfo => {
             this._isSyncing = false
 
             // Save result for later use in onBeforeRender
@@ -555,6 +539,29 @@ const Text = /*#__PURE__*/(() => {
 
     clone() {
       return new this.constructor().copy(this)
+    }
+
+    /**
+     * Gets the arguments that should be passed to layoutText().
+     */
+    getLayoutTextArgs() {
+      return {
+        text: this.text,
+        font: this.font,
+        fontSize: this.fontSize || 0.1,
+        letterSpacing: this.letterSpacing || 0,
+        lineHeight: this.lineHeight || 'normal',
+        maxWidth: this.maxWidth,
+        textAlign: this.textAlign,
+        textIndent: this.textIndent,
+        whiteSpace: this.whiteSpace,
+        overflowWrap: this.overflowWrap,
+        anchorX: this.anchorX,
+        anchorY: this.anchorY,
+        colorRanges: this.colorRanges,
+        includeCaretPositions: true, //TODO parameterize
+        sdfGlyphSize: this.sdfGlyphSize
+      }
     }
   }
 

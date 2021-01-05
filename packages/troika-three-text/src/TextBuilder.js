@@ -28,7 +28,7 @@ let hasRequested = false
  *                 Defaults to "Roboto Regular" from Google Fonts.
  * @param {Number} config.sdfGlyphSize - The default size of each glyph's SDF (signed distance field)
  *                 texture used for rendering. Must be a power-of-two number, and applies to all fonts,
- *                 but note that this can also be overridden per call to `getTextRenderInfo()`.
+ *                 but note that this can also be overridden per call to `layoutText()`.
  *                 Larger sizes can improve the quality of glyph rendering by increasing the sharpness
  *                 of corners and preventing loss of very thin lines, at the expense of memory. Defaults
  *                 to 64 which is generally a good balance of size and quality.
@@ -66,7 +66,7 @@ function configureTextBuilder(config) {
 const atlases = Object.create(null)
 
 /**
- * @typedef {object} TroikaTextRenderInfo - Format of the result from `getTextRenderInfo`.
+ * @typedef {object} TroikaTextRenderInfo - Format of the result from `layoutText`.
  * @property {object} parameters - The normalized input arguments to the render call.
  * @property {DataTexture} sdfTexture - The SDF atlas texture.
  * @property {number} sdfGlyphSize - The size of each glyph's SDF; see `configureTextBuilder`.
@@ -95,7 +95,7 @@ const atlases = Object.create(null)
  */
 
 /**
- * @callback getTextRenderInfo~callback
+ * @callback layoutText~callback
  * @param {TroikaTextRenderInfo} textRenderInfo
  */
 
@@ -103,9 +103,9 @@ const atlases = Object.create(null)
  * Main entry point for requesting the data needed to render a text string with given font parameters.
  * This is an asynchronous call, performing most of the logic in a web worker thread.
  * @param {object} args
- * @param {getTextRenderInfo~callback} callback
+ * @param {layoutText~callback} callback
  */
-function getTextRenderInfo(args, callback) {
+function layoutText(args, callback) {
   hasRequested = true
   args = assign({}, args)
 
@@ -239,7 +239,7 @@ function getTextRenderInfo(args, callback) {
  */
 function preloadFont({font, characters, sdfGlyphSize}, callback) {
   let text = Array.isArray(characters) ? characters.join('\n') : '' + characters
-  getTextRenderInfo({ font, sdfGlyphSize, text }, callback)
+  layoutText({ font, sdfGlyphSize, text }, callback)
 }
 
 
@@ -336,7 +336,7 @@ window._dumpSDFs = function() {
 
 export {
   configureTextBuilder,
-  getTextRenderInfo,
+  layoutText,
   preloadFont,
   fontProcessorWorkerModule
 }

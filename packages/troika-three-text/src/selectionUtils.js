@@ -11,7 +11,7 @@
 
 /**
  * Given a local x/y coordinate in the text block plane, find the nearest caret position.
- * @param {TroikaTextRenderInfo} textRenderInfo - a result object from TextBuilder#getTextRenderInfo
+ * @param {TroikaTextRenderInfo} textRenderInfo - a result object from TextBuilder#layoutText
  * @param {number} x
  * @param {number} y
  * @return {TextCaret | null}
